@@ -55,4 +55,41 @@ hist(RheumArth$Yrs_From_Dx,
      ylab = "Frequency of Rheumatoid Arthritis",
      col = "purple")
 
+#Summary stats for OsteopScreen variable
 
+prop.table(table(RheumArth$OsteopScreen)) * 100
+colSums(is.na(RheumArth["OsteopScreen"]))
+
+#Creating table to investigate how Osteoporosis is related to Age Group
+OstTable <- tbl_summary(data = RheumArth,
+                      include = OsteopScreen,
+                      by = AgeGp, # split table by group
+                      type = all_dichotomous() ~ "categorical", # display all categorical levels
+                      #statistic = list(
+                      #  Yrs_From_Dx ~ "{mean} ({sd})"),
+                      missing = "ifany",
+                      digits = all_continuous() ~ 1)%>%
+  add_n() %>% # add column with total number of non-missing observations
+  add_overall() %>% # add column with overall summary statistics
+  modify_header(label = "") %>% # update the column header
+  modify_spanning_header(c("stat_1", "stat_2") ~ "**Age Groups**") %>%
+  add_stat_label() %>% # add statistics labels to each row, rather than footnote
+  bold_labels()
+print(OstTable)
+
+#Scatterplot of DAS_28 against age group
+plot(RheumArth$Age, RheumArth$DAS_28,
+     main = "Disease activity score for 28 joints vs. age",
+     xlab = "Age Group",
+     ylab = "DAS_28")
+
+#Box plot of DAS_28 against age group
+boxplot(RheumArth$DAS_28 ~ RheumArth$AgeGp,
+        data = RheumArth,
+        names = c("40 to 70", "75+"),
+        xlab = "Age Group",
+        ylab = "DAS_28",
+        main = "DAS_28 vs. Age group")
+
+# Subset dataset DAS_28 > 4
+View(subset(RheumArth, DAS_28 > 4))
