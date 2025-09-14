@@ -43,6 +43,10 @@ Table1 <- tbl_summary(data = RheumArth,
   bold_labels()
 print(Table1)
 
+as_flex_table(Table1) %>%
+  save_as_docx(path = "myTable1.docx")
+
+
 print(summary(RheumArth$Yrs_From_Dx)) #Summary statistics for Yrs_From_Dx (Min, Q1, Q2, mean, Q3, max, NAs)
 print(sd(RheumArth$Yrs_From_Dx,na.rm = TRUE)) # SD of Yrs_From_Dx
 IQR(RheumArth$Yrs_From_Dx, na.rm = TRUE) # IQR of Yrs_From_Dx
