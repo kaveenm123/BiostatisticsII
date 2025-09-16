@@ -89,9 +89,9 @@ as_flex_table(Table1) %>%
 
 #Scatter plot of cholchg vs wtchg
 plot(tomhs$cholchg, tomhs$wtchg,
-     main = "Total cholersterol change vs. weight change",
+     main = "Total cholesterol change vs. weight change",
      xlab = "Total cholesterol change",
-     ylab = "Wegiht change")
+     ylab = "Weight change")
 
 # Simple linear regression model between total cholesterol change vs. total weight change
 m1 <- lm(cholchg ~ wtchg, data = tomhs) # Simple linear regeression
