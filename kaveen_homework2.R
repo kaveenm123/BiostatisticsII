@@ -3,6 +3,61 @@ library(gtsummary)
 library(flextable)
 
 
+############################################
+#REPORT 
+############################################
+
+#Creating continuous variables in the dataset
+tomhs$wtchg<-tomhs$wt12 - tomhs$wtbl   
+tomhs$cholchg<-tomhs$chol12 - tomhs$cholbl
+
+#Table 1 
+Table1 <- tbl_summary(data = tomhs,
+                      include = c(age, wtbl, wt12, wtchg, cholbl, chol12, cholchg),
+                      by = sex,
+                      type = all_dichotomous() ~ "categorical", # display all categorical levels
+                      missing = "no",
+                      digits = all_continuous() ~ 1,
+                      label = list(wtbl ~ "Baseline Weight",
+                                   cholbl ~ "Baseline Total Cholesterol",
+                                   wt12 ~ "Follow-up Weight measurement (12 months)",
+                                   chol12 ~ "Follow-up Cholesterol measurement (12 months)",
+                                   wtchg ~ "Weight change",
+                                   cholchg ~ "Total cholesterol change")) %>% # add statistics labels to each row, rather than footnote
+  add_n() %>% # add column with total number of non-missing observations
+  add_overall() %>% # add column with overall summary statistics
+  modify_header(label = "", stat_1 = "**Men**, N = {n}", stat_2 = "**Women**, N = {n}") %>% # update the column header
+  add_stat_label() %>% # add statistics labels to each row, rather than footnote
+  bold_labels()
+  
+  print(Table1)
+  
+  as_flex_table(Table1) %>%
+    save_as_docx(path = "Homework2_Table1.docx")
+
+#Scatter plot showing male and female weight change
+plot(tomhs$wtchg, tomhs$sex,
+     main = "weight change vs. sex",
+     xlab = "weight change",
+     ylab = "sex  (1 = male, 2 = female)",
+     #col = c("purple", "red")
+     col = ifelse(tomhs$sex==1, "purple","red"))
+
+#Linear regression model - Investigating the effect of weight change on total cholesterol change without adjusting for anything
+m1 <- lm(cholchg ~ wtchg, data = tomhs) # Simple linear regeression
+summary(m1)
+confint(m1)
+
+#Multi-linear regression model 
+m2<- lm(cholchg ~ wtchg + sex, data = tomhs)
+summary(m2)
+confint(m2)
+
+
+############################################
+#PROBLEM SET
+############################################
+
 # Simulate ages and compute means for men vs women
 ages <- seq(0, 80)
 sbp_women <- 100 + 0.3*ages      # Increases by 3mmHg per 10 years of age
