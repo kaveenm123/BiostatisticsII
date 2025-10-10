@@ -10,7 +10,7 @@ library(interactions)
 library(emmeans)
 
 #rm(list = ls())
-
+ 
 
 tomhs$wtchg<-tomhs$wt12 - tomhs$wtbl   
 tomhs$cholchg<-tomhs$chol12 - tomhs$cholbl
